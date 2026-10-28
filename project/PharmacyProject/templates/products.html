@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Products - Pharmacy Medicine Ordering System{% endblock %}
+{% block content %}
+<section class="section">
+    <h1>Products</h1>
+    <p class="muted">All medicines on this page are sample data for a college demonstration. They are not real products.</p>
+    <div class="card-grid">
+        {% for med in medicines %}
+            <div class="card">
+                <h3>{{ med.name }}</h3>
+                <p class="price">${{ "%.2f"|format(med.price) }}</p>
+                <p class="desc">{{ med.description }}</p>
+                <p class="availability">
+                    Availability:
+                    {% if med.available %}
+                        <span class="badge badge-success">In Stock</span>
+                    {% else %}
+                        <span class="badge badge-error">Out of Stock</span>
+                    {% endif %}
+                </p>
+                <form method="post" action="{{ url_for('add_to_cart', medicine_id=med.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn" {% if not med.available %}disabled{% endif %}>Add to Cart</button>
+                </form>
+            </div>
+        {% else %}
+            <p>No medicines are available right now.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section cart-preview">
+    <h2>Your Cart</h2>
+    {% if cart_items %}
+        <table class="data-table">
+            <thead>
+                <tr><th>Medicine</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>${{ "%.2f"|format(item.price) }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ "%.2f"|format(item.line_total) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="cart-total">Total: <strong>${{ "%.2f"|format(cart_total) }}</strong></p>
+        <a href="{{ url_for('cart') }}" class="btn btn-secondary">View Cart</a>
+    {% else %}
+        <p class="muted">Your cart is empty.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Cart - Pharmacy Medicine Ordering System{% endblock %}
+{% block content %}
+<section class="section">
+    <h1>Shopping Cart</h1>
+    {% if cart_items %}
+        <form method="post" action="{{ url_for('update_cart') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>${{ "%.2f"|format(item.price) }}</td>
+                            <td>
+                                <input type="number" name="qty_{{ item.id }}" value="{{ item.quantity }}" min="1" class="qty-input">
+                            </td>
+                            <td>${{ "%.2f"|format(item.line_total) }}</td>
+                            <td>
+                                <form method="post" action="{{ url_for('remove_from_cart', medicine_id=item.id) }}" class="inline-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p class="cart-total">Total: <strong>${{ "%.2f"|format(cart_total) }}</strong></p>
+            <button type="submit" class="btn btn-secondary">Update Quantities</button>
+        </form>
+
+        <form method="post" action="{{ url_for('clear_cart') }}" class="inline-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-danger">Clear Cart</button>
+        </form>
+
+        <a href="{{ url_for('checkout') }}" class="btn">Proceed to Checkout</a>
+    {% else %}
+        <p class="muted">Your cart is empty.</p>
+        <a href="{{ url_for('products') }}" class="btn">Browse Products</a>
+    {% endif %}
+</section>
+{% endblock %}

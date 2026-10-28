@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Staff Management - Admin{% endblock %}
+{% block content %}
+<section class="section">
+    <h1>Staff Management</h1>
+    <p><a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-sm">Back to Dashboard</a></p>
+    <p>Total staff members: <strong>{{ staff|length }}</strong></p>
+
+    <h2>Add Staff Member</h2>
+    <form method="post" action="{{ url_for('admin_staff') }}" class="form form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+        <div>
+            <label for="role">Job Role</label>
+            <input type="text" id="role" name="role" required>
+        </div>
+        <div class="full">
+            <button type="submit" class="btn">Add Staff</button>
+        </div>
+    </form>
+
+    <h2>Staff List</h2>
+    {% if staff %}
+        <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for member in staff %}
+                    <tr>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.email }}</td>
+                        <td>{{ member.phone }}</td>
+                        <td>{{ member.role }}</td>
+                        <td>
+                            <a href="{{ url_for('admin_staff_edit', staff_id=member.id) }}" class="btn btn-sm btn-secondary">Edit</a>
+                            <form method="post" action="{{ url_for('admin_staff_delete', staff_id=member.id) }}" class="inline-form" onsubmit="return confirm('Remove this staff member?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">No staff members yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

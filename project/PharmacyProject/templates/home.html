@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Home - Pharmacy Medicine Ordering System{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Welcome to the Pharmacy Medicine Ordering System</h1>
+    <p>This is a college demonstration project for ordering sample medicines online.
+       Browse our sample products and place demo orders. This is <strong>not a real pharmacy</strong>.</p>
+    <a href="{{ url_for('products') }}" class="btn">View Products</a>
+</section>
+
+<section class="section">
+    <h2>Sample Medicines</h2>
+    <p class="muted">The medicines shown below are fictional sample data for demonstration purposes only.</p>
+    <div class="card-grid">
+        {% for med in medicines %}
+            <div class="card">
+                <h3>{{ med.name }}</h3>
+                <p class="price">${{ "%.2f"|format(med.price) }}</p>
+                <p class="desc">{{ med.description }}</p>
+                {% if med.available %}
+                    <span class="badge badge-success">In Stock</span>
+                {% else %}
+                    <span class="badge badge-error">Out of Stock</span>
+                {% endif %}
+                <form method="post" action="{{ url_for('add_to_cart', medicine_id=med.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn" {% if not med.available %}disabled{% endif %}>Add to Cart</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

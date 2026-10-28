@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - Pharmacy Medicine Ordering System{% endblock %}
+{% block content %}
+<section class="section">
+    <h1>Admin Dashboard</h1>
+    <p><a href="{{ url_for('admin_logout') }}" class="btn btn-danger btn-sm">Logout</a></p>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <span class="summary-number">{{ total_orders }}</span>
+            <span class="summary-label">Total Orders</span>
+        </div>
+        <div class="summary-card summary-pending">
+            <span class="summary-number">{{ pending_orders }}</span>
+            <span class="summary-label">Pending Orders</span>
+        </div>
+        <div class="summary-card summary-done">
+            <span class="summary-number">{{ completed_orders }}</span>
+            <span class="summary-label">Completed Orders</span>
+        </div>
+        <div class="summary-card">
+            <span class="summary-number">{{ total_customers }}</span>
+            <span class="summary-label">Registered Customers</span>
+        </div>
+        <div class="summary-card">
+            <span class="summary-number">{{ total_staff }}</span>
+            <span class="summary-label">Staff Members</span>
+        </div>
+    </div>
+
+    <nav class="admin-nav">
+        <a href="{{ url_for('admin_orders') }}" class="btn btn-secondary">Order Management</a>
+        <a href="{{ url_for('admin_staff') }}" class="btn btn-secondary">Staff Management</a>
+        <a href="{{ url_for('admin_customers') }}" class="btn btn-secondary">Customer Management</a>
+        <a href="{{ url_for('admin_support') }}" class="btn btn-secondary">Support Messages</a>
+        <a href="{{ url_for('admin_medicines') }}" class="btn btn-secondary">Medicine Management</a>
+    </nav>
+
+    <h2>Recent Pending Orders</h2>
+    {% if pending_orders_list %}
+        <table class="data-table">
+            <thead>
+                <tr><th>Order ID</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                {% for order in pending_orders_list %}
+                    <tr class="row-pending">
+                        <td>{{ order.order_ref }}</td>
+                        <td>{{ order.customer_name }}</td>
+                        <td>{{ order.created_at }}</td>
+                        <td>${{ "%.2f"|format(order.total) }}</td>
+                        <td><span class="badge badge-warning">{{ order.status }}</span></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">No pending orders.</p>
+    {% endif %}
+</section>
+{% endblock %}

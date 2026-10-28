@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Checkout - Pharmacy Medicine Ordering System{% endblock %}
+{% block content %}
+<section class="section">
+    <h1>Checkout</h1>
+    <p class="muted">Review your cart and enter your delivery details to place a demo order.</p>
+
+    <h2>Order Summary</h2>
+    <table class="data-table">
+        <thead>
+            <tr><th>Medicine</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>${{ "%.2f"|format(item.price) }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ "%.2f"|format(item.line_total) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="cart-total">Total: <strong>${{ "%.2f"|format(cart_total) }}</strong></p>
+
+    <h2>Delivery Details</h2>
+    <form method="post" action="{{ url_for('checkout') }}" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="customer_name">Full Name</label>
+        <input type="text" id="customer_name" name="customer_name" value="{{ customer_name|default('') }}" required>
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" value="{{ phone|default('') }}" required>
+
+        <label for="address">Delivery Address</label>
+        <textarea id="address" name="address" rows="3" required>{{ address|default('') }}</textarea>
+
+        <button type="submit" class="btn">Place Order</button>
+    </form>
+</section>
+{% endblock %}

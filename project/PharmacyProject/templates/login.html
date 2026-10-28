@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Login - Pharmacy Medicine Ordering System{% endblock %}
+{% block content %}
+<section class="section form-section">
+    <h1>Customer Login</h1>
+    <form method="post" action="{{ url_for('login') }}" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="{{ email|default('') }}" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" class="btn">Login</button>
+    </form>
+    <p>No account yet? <a href="{{ url_for('register') }}">Register here</a>.</p>
+    <p>Are you an admin? <a href="{{ url_for('admin_login') }}">Admin login</a>.</p>
+</section>
+{% endblock %}
